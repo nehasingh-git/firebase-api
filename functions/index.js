@@ -72,7 +72,7 @@ app.post('/api/data/get', (req, res) => {
 app.post('/api/document', (req, res) => {
     (async () => {
         try {
-            await db.collection('resumes').doc('/' + req.body.id + '/').create({item: req.body.item});
+            await db.collection('resumes').doc('/' + req.body.documentId + '/').create({document: req.body.data});
             return res.status(200).send();
         } catch (error) {
             console.log(error);
@@ -121,13 +121,30 @@ app.get('/api/documents', (req, res) => {
         })();
     });
 
-// update
+// update skin code
+app.put('/api/document/:id/updateSkin', (req, res) => {
+    (async () => {
+        try {
+            const document = db.collection('resumes').doc(req.params.id);
+            await document.update({
+                document: req.body.data
+            });
+            return res.status(200).send();
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+        })();
+    });
+    
+
+// update document
 app.put('/api/document/:id', (req, res) => {
 (async () => {
     try {
         const document = db.collection('resumes').doc(req.params.id);
         await document.update({
-            item: req.body.item
+            data: req.body.data
         });
         return res.status(200).send();
     } catch (error) {
@@ -136,6 +153,40 @@ app.put('/api/document/:id', (req, res) => {
     }
     })();
 });
+
+
+// create / update contact
+app.put('/api/document/:id/contact/create', (req, res) => {
+    (async () => {
+        try {
+            const document = db.collection('resumes').doc(req.params.id);
+            await document.update({
+                contact: req.body.data
+            });
+            return res.status(200).send();
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+        })();
+ });
+
+// create / update education
+app.put('/api/document/:id/education/create', (req, res) => {
+    (async () => {
+        try {
+            const document = db.collection('resumes').doc(req.params.id);
+            await document.update({
+                education: req.body.data
+            });
+            return res.status(200).send();
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send(error);
+        }
+        })();
+ });
+
 
 // delete
 app.delete('/api/document/:id', (req, res) => {
